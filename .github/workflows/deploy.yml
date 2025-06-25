@@ -1,0 +1,32 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # This workflow runs when you push to the 'main' branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Use a standard Linux environment for building
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Get your code from the repository
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4 # Install Node.js on GitHub's server
+        with:
+          node-version: '20' # You can change this to '22' if you prefer, but '20' is stable
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps # Install project's necessary packages
+
+      - name: Build
+        run: npm run build # Run your build command to create the 'dist' folder
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Use a popular GitHub Action for deployment
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # GitHub's special token for permissions
+          publish_dir: ./dist # THIS IS THE KEY: Tells it to publish the 'dist' folder
+          publish_branch: gh-pages # Tell it to publish to a separate 'gh-pages' branch
+          enable_jekyll: false # Important: Disable Jekyll, as your project is not JekyllAdd GitHub Pages deployment workflow.
